@@ -4,6 +4,7 @@ gi.require_version('AppIndicator3', '0.1')
 from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Gtk
 
+import time
 import signal
 import threading
 
@@ -52,9 +53,16 @@ class AppIndicator():
 
     def spotify_lyrics(self, source):
         win = LyricsWindow("spotify", self)
-        thread = threading.Thread(target=win.get_spotify)
-        thread.daemon = True
-        thread.start()
+
+        class Worker(threading.Thread):
+            def run(self):
+                while (True):
+                    win.get_spotify()
+                    time.sleep(5)
+
+        worker = Worker()
+        worker.daemon = True
+        worker.start()
 
     def preferences(self, source):
         win = PreferenceWindow(self)

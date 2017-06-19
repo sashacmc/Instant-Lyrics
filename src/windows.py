@@ -21,14 +21,14 @@ class LyricsWindow(Gtk.Window):
                     utils.get_icon_path('../icons/instant-lyrics-32.png'))
         self.set_border_width(20)
         self.set_default_size(
-                            int(app.Config.get('Main', 'window width')), 
+                            int(app.Config.get('Main', 'window width')),
                             int(app.Config.get('Main', 'window height')))
         self.set_position(Gtk.WindowPosition.CENTER)
 
         self.main_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.main_box.set_size_request(
-                            int(app.Config.get('Main', 'window width')), 
+                            int(app.Config.get('Main', 'window width')),
                             int(app.Config.get('Main', 'window height')))
 
         if(type == "get"):
@@ -44,6 +44,9 @@ class LyricsWindow(Gtk.Window):
 
         self.add(scrolled)
         self.show_all()
+
+        self.song = ''
+        self.artist = ''
 
     def on_key_release(self, widget, ev, data=None):
         if ev.keyval == Gdk.KEY_Return:
@@ -83,7 +86,7 @@ class LyricsWindow(Gtk.Window):
         lyrics_vbox.pack_start(self.spinner, False, False, 5)
         lyrics_vbox.pack_start(self.lyrics, False, False, 5)
         lyrics_vbox.set_size_request(
-                        int(app.Config.get('Main', 'window width')), 
+                        int(app.Config.get('Main', 'window width')),
                         int(app.Config.get('Main', 'window height')))
 
         return lyrics_vbox
@@ -144,7 +147,10 @@ class LyricsWindow(Gtk.Window):
         title = "<b><big>" + song + "</big>\n" + artist + "</b>"
         self.title.set_markup(title)
 
-        self.put_lyrics(song + " " + artist)
+        if self.song != song or self.artist != artist:
+            self.put_lyrics(song + " " + artist)
+            self.song = song
+            self.artist = artist
 
 class PreferenceWindow(Gtk.Window):
 
@@ -190,7 +196,7 @@ class PreferenceWindow(Gtk.Window):
 
         row = Gtk.ListBoxRow()
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
-        row.add(hbox) 
+        row.add(hbox)
         width = Gtk.Label("Lyrics window width", xalign=0)
         self.width_val = Gtk.Entry()
         self.width_val.set_text(app.Config.get('Main', 'window width'))
@@ -198,7 +204,7 @@ class PreferenceWindow(Gtk.Window):
 
         hbox.pack_start(width, True, True, 0)
         hbox.pack_start(self.width_val, False, True, 0)
-        
+
         listbox.add(row)
 
         row = Gtk.ListBoxRow()
@@ -212,7 +218,7 @@ class PreferenceWindow(Gtk.Window):
 
         hbox.pack_start(height, True, True, 0)
         hbox.pack_start(self.height_val, False, True, 0)
-        
+
         listbox.add(row)
 
         """ TODO: autostart
@@ -231,10 +237,10 @@ class PreferenceWindow(Gtk.Window):
 
         hbox.pack_start(label, True, True, 0)
         hbox.pack_start(self.switch, False, True, 0)
-        
+
         listbox.add(row)
         """
-        
+
         return listbox
 
     def save_config(self, source, *arg):
@@ -248,7 +254,7 @@ class PreferenceWindow(Gtk.Window):
         if(new_width.isdigit() and new_height.isdigit()):
             app.Config.set('Main', "window width", new_width)
             app.Config.set('Main', "window height", new_height)
-            
+
             with open(CONFIG_PATH, 'w') as config_file:
                 app.Config.write(config_file)
 
@@ -273,7 +279,7 @@ class PreferenceWindow(Gtk.Window):
 
     def create_desktop_entry(self, source):
         utils.create_desktop_entry()
-        msg = ("Desktop entry created. You can now start the\n" 
+        msg = ("Desktop entry created. You can now start the\n"
                 "application from your Applications Launcher.\n\n"
                 "<small>If you ever change the location "
                 "of the Instant-Lyrics\nfolder, you will "
