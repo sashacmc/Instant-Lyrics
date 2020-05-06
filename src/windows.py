@@ -78,6 +78,7 @@ class LyricsWindow(Gtk.Window):
         self.lyrics.set_justify(Gtk.Justification.CENTER)
         self.lyrics.set_property("margin_left", 40)
         self.lyrics.set_property("margin_right", 40)
+        self.lyrics.set_property("selectable", True)
         self.lyrics.set_line_wrap(True)
 
         self.spinner = Gtk.Spinner()
