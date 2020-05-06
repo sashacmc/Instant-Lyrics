@@ -17,14 +17,14 @@ def get_lyrics(song_name):
            'Accept-Language': 'en-US,en;q=0.8',
            'Connection': 'keep-alive'}
 
-    url = 'http://www.google.com/search?q=' + name
+    url = 'https://www.google.com/search?q=' + name
 
     result = requests.get(url, headers=hdr).text
-    link_start = result.find('http://www.metrolyrics.com')
+    link_start = result.find('https://www.metrolyrics.com')
 
     if(link_start == -1):
-        return("Lyrics not found on Metrolyrics")
-        
+        return("Google not found lyrics on Metrolyrics")
+
     link_end = result.find('html', link_start + 1)
     link = result[link_start:link_end + 4]
 
@@ -43,6 +43,9 @@ def get_lyrics(song_name):
         final_lyrics = unicode.join(u'\n', map(unicode, raw_lyrics))
     except NameError:
         final_lyrics = str.join(u'\n', map(str, raw_lyrics))
+
+    if(final_lyrics == ''):
+        return("Lyrics not found on Metrolyrics")
 
     final_lyrics = (final_lyrics.replace('<p class="verse">', '\n'))
     final_lyrics = (final_lyrics.replace('<br/>', ' '))
