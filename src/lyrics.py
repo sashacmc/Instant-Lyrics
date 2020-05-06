@@ -28,14 +28,13 @@ def get_lyrics(song_name):
     link_end = result.find('html', link_start + 1)
     link = result[link_start:link_end + 4]
 
-
-    lyrics_html = requests.get(link, headers={
-                               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel'
-                               'Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, '
-                               'like Gecko) Chrome/55.0.2883.95 Safari/537.36'
-                               }
-                               ).text
-
+    req = requests.get(link, headers={
+                       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel'
+                       'Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, '
+                       'like Gecko) Chrome/55.0.2883.95 Safari/537.36'
+                       })
+    req.encoding = 'UTF-8'
+    lyrics_html = req.text
     soup = BeautifulSoup(lyrics_html, "lxml")
     raw_lyrics = (soup.findAll('p', attrs={'class': 'verse'}))
     paras = []
